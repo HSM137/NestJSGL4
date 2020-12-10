@@ -1,47 +1,42 @@
+import { TodoService } from './services/todo.service';
 import { TodoStatusEnum } from './enums/todo-status.enum';
-import {Todo} from './models/todo.model'
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import {v4 as uuidv4} from 'uuid';
+import {Todo,CreateTodoDTO,UpdateTodoDTO} from './models/todo.model'
+import { Body, Controller, Delete, Get, Param, Post, Put, Patch, NotFoundException } from '@nestjs/common';
 
 @Controller('todo')
 export class TodoController {
-    private todos=[]
+
+    constructor(private todoService: TodoService) {
+        
+    }
+
     @Get()
     getTodos(){
-        return this.todos;
+        return this.todoService.getTodos();
+    }
+
+    @Get(':id')
+    getTodoById(
+    @Param('id') id: string
+    ) {
+        return this.todoService.getTodoById(id);
     }
 
     @Post()
-    createTodo(@Body() body){
-        this.todos.push(new Todo(uuidv4(),body.nom,body.desc,TodoStatusEnum.waiting));
+    createTodo(@Body() body: CreateTodoDTO){
+        return this.todoService.createTodo(body);
     }
 
-    @Delete('/:nom')
-    deleteTodo(@Param('nom') nom){
-        this.todos=this.todos.filter(x=>x.nom!=nom);
+    @Delete('/:id')
+    deleteTodo(@Param('id') id: string){
+        return this.todoService.deleteTodo(id);
     }
 
-    @Put('/:nom/:status')
-    updateTodo(@Param('nom') nom, @Param('status')status){
-        let todo=this.todos.filter(x=>x.nom==nom);
-        if(todo.length>0)
-        {
-            switch(status)
-            {
-                case "0":
-                    todo[0].status=TodoStatusEnum.waiting;
-                    break;
-                
-                case "1":
-                    todo[0].status=TodoStatusEnum.actif;
-                    break;
-                case "2":
-                    todo[0].status=TodoStatusEnum.done;
-                    break;
-                default: 
-                console.log("error");
-            }
-        }
+    @Put('/:id')
+    updateTodo(@Param('id') id, @Body()toDo: UpdateTodoDTO){
+        console.log(typeof toDo);
+
+        return this.todoService.updateTodo(id,toDo);
     }
 
 }
