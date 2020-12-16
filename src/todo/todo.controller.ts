@@ -1,6 +1,6 @@
 import { TodoService } from './services/todo.service';
 import { TodoStatusEnum } from './enums/todo-status.enum';
-import {Todo,CreateTodoDTO,UpdateTodoDTO} from './models/todo.model'
+import {Todo,CreateTodoDTO,UpdateTodoDTO, SearchQueryDTO} from './models/todo.model'
 import { Body, Controller, Delete, Get, Param, Post, Put, Patch, NotFoundException } from '@nestjs/common';
 
 @Controller('todo')
@@ -34,9 +34,17 @@ export class TodoController {
 
     @Put('/:id')
     updateTodo(@Param('id') id, @Body()toDo: UpdateTodoDTO){
-        console.log(typeof toDo);
-
         return this.todoService.updateTodo(id,toDo);
+    }
+
+    @Get('restore/:id')
+    restoreTodo(@Param('id') id:string) {
+        return this.todoService.restoreTodo(id);
+    }
+
+    @Post('search')
+    search(@Body() searchQuery: SearchQueryDTO) {
+        return this.todoService.search(searchQuery);
     }
 
 }

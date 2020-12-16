@@ -45,3 +45,12 @@ export class UpdateTodoDTO {
     @IsIn([TodoStatusEnum.actif,TodoStatusEnum.done,TodoStatusEnum.waiting])
     status: TodoStatusEnum
 }
+
+export class SearchQueryDTO {
+    @IsOptional()
+    desc: string;
+
+    @IsOptional()
+    @IsIn([TodoStatusEnum.actif,TodoStatusEnum.done,TodoStatusEnum.waiting])
+    status: TodoStatusEnum;
+}
